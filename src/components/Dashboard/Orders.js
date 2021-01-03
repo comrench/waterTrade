@@ -1,25 +1,17 @@
-import React from 'react';
-import Link from '@material-ui/core/Link';
-import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Title from './Title';
+import React from "react";
+import Link from "@material-ui/core/Link";
+import { makeStyles } from "@material-ui/core/styles";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Title from "./Title";
 
 // Generate Order Data
-function createData(id,name, amount) {
-  return {id,name, amount };
+function createData(id, name, amount) {
+  return { id, name, amount };
 }
-
-const rows = [
-  createData('0','Elvis Presley', 312.44),
-  createData('1','Paul McCartney', 866.99),
-  createData('2','Tom Scholz', 100.81),
-  createData('4','Michael Jackson', 654.39),
-  createData('5','Bruce Springsteen', 212.79),
-];
 
 function preventDefault(event) {
   event.preventDefault();
@@ -31,7 +23,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Orders() {
+export default function Orders(props) {
+  const item = props.tableData;
+  // console.log(data);
+  const rows = [
+    createData("0", item[0][0], item[0][1]),
+    createData("1", item[1][0], item[1][1]),
+    createData("2", item[2][0], item[2][1]),
+    createData("4", item[3][0], item[3][1]),
+    createData("5", item[4][0], item[4][1]),
+  ];
   const classes = useStyles();
   return (
     <React.Fragment>

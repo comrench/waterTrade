@@ -1,18 +1,20 @@
 /* eslint-disable no-use-before-define */
 import React from "react";
-import {connect} from 'react-redux';
+import { connect } from "react-redux";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { getDashboard } from "../../actions";
 
 export const Search = (props) => {
   const [value, setValue] = React.useState("");
-  console.log(value);
-  const onSearchChange = newValue => {
+  const onSearchChange = (newValue) => {
     // e.preventDefault();
-    console.log('value has been changed '+newValue);
-    props.getStockDetails({symbol: newValue});
-  }
+    console.log("value has been changed " + newValue);
+    const num = StockMarket.find((item) => {
+      return item.title == newValue;
+    });
+    props.getStockDetails({ symbol: num.symbol });
+  };
   return (
     <div style={{ width: 300, paddingBottom: 20 }}>
       <Autocomplete
@@ -24,7 +26,7 @@ export const Search = (props) => {
         freeSolo
         id="free-solo-2-demo"
         disableClearable
-        options={top100Films.map((option) => option.title)}
+        options={StockMarket.map((option) => option.title)}
         renderInput={(params) => (
           <TextField
             {...params}
@@ -37,25 +39,25 @@ export const Search = (props) => {
       />
     </div>
   );
-}
+};
 
-const mapStateToProps = ({dashboard}) => {
-  return {dashStockData: dashboard.stockInfo}
-}
+const mapStateToProps = ({ dashboard }) => {
+  return { dashStockData: dashboard.stockInfo };
+};
 
 const mapDispatchToProps = {
-  getStockDetails: getDashboard
-}
+  getStockDetails: getDashboard,
+};
 
-export default connect(mapStateToProps,mapDispatchToProps)(Search);
+export default connect(mapStateToProps, mapDispatchToProps)(Search);
 
 // Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
-const top100Films = [
-  { title: "AAPL", year: 1994 },
-  { title: "MSFT", year: 1972 },
-  { title: "AMZN", year: 1974 },
-  { title: "ZM", year: 2008 },
-  { title: "NVDA", year: 1957 },
-  { title: "ETSY", year: 1993 },
-  { title: "FB", year: 1994 },
+const StockMarket = [
+  { title: "AAPL", symbol: 8049 },
+  { title: "MSFT", symbol: 27426 },
+  { title: "AMZN", symbol: 7410 },
+  { title: "ZM", symbol: 25421932 },
+  { title: "NVDA", symbol: 29814 },
+  { title: "ETSY", symbol: 9530962 },
+  { title: "FB", symbol: 2067121 },
 ];

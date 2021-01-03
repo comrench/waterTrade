@@ -1,5 +1,5 @@
 import React from "react";
-import { connect } from 'react-redux'
+import { connect } from "react-redux";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -24,7 +24,8 @@ import Chart from "./Chart";
 import Deposits from "./Deposits";
 import Orders from "./Orders";
 import Search from "../Search/Search";
-import Pricing from "./Pricing"
+import Pricing from "./Pricing";
+import { divideData } from "../../etc/helper";
 
 function Copyright() {
   return (
@@ -120,7 +121,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Dashboard() {
+export const Dashboard = (props) => {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
   const handleDrawerOpen = () => {
@@ -130,7 +131,18 @@ function Dashboard() {
     setOpen(false);
   };
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+  //console.log(props.dashStockData);
+  let data = null;
+  let description = null;
+  let prevDayClosePrice = null;
+  if (props.dashStockData) {
+    data = divideData(props.dashStockData);
+    description = props.dashStockData.description;
+    prevDayClosePrice = props.dashStockData.prevDayClosePrice;
+  }
 
+  console.log(description);
+  console.log(data);
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -188,25 +200,23 @@ function Dashboard() {
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
-
-          
-          
           <Grid container spacing={3}>
-          <Grid item xs={12} >
-          <Grid item xs={12}>
-              <Search />
-              
-                </Grid>
-                <Grid item xs={12}>
-              <Pricing />
+            <Grid item xs={12}>
+              <Grid item xs={12}>
+                <Search />
               </Grid>
+              {data && (
+                <Grid item xs={12}>
+                  <Pricing title={description} price={prevDayClosePrice} />
+                </Grid>
+              )}
             </Grid>
             {/* Chart */}
             {/* <Grid item xs={12} md={8} lg={9}> */}
-              {/* <Paper className={fixedHeightPaper}> */}
-              
-                {/* <Chart /> */}
-              {/* </Paper> */}
+            {/* <Paper className={fixedHeightPaper}> */}
+
+            {/* <Chart /> */}
+            {/* </Paper> */}
             {/* </Grid> */}
             {/* Recent Deposits */}
             {/* <Grid item xs={12} md={4} lg={3}>
@@ -215,32 +225,36 @@ function Dashboard() {
               </Paper>
             </Grid> */}
             {/* Recent Orders */}
-            <Grid item xs={6}>
-              <Paper className={classes.paper}>
-                <Orders />
-              </Paper>
-            </Grid>
-            <Grid item xs={6}>
-              <Paper className={classes.paper}>
-                <Orders />
-              </Paper>
-            </Grid>
+            {data && (
+              <Grid item xs={6}>
+                <Paper className={classes.paper}>
+                  <Orders tableData={data[0]} />
+                </Paper>
+              </Grid>
+            )}
+            {data && (
+              <Grid item xs={6}>
+                <Paper className={classes.paper}>
+                  <Orders tableData={data[1]} />
+                </Paper>
+              </Grid>
+            )}
           </Grid>
-          <Box pt={4}>
-            <Copyright />
-          </Box>
+          {data && (
+            <Box pt={4}>
+              <Copyright />
+            </Box>
+          )}
         </Container>
       </main>
     </div>
   );
-}
+};
 
-const mapStateToProps = (state /*, ownProps*/) => {
-  return {
-    counter: state.counter,
-  }
-}
+const mapStateToProps = ({ dashboard }) => {
+  return { dashStockData: dashboard.stocksInfo };
+};
 
 //const mapDispatchToProps = { increment, decrement, reset }
 
-export default connect(mapStateToProps, null)(Dashboard)
+export default connect(mapStateToProps, null)(Dashboard);
